@@ -8,151 +8,384 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   min-height:100vh;
-  background:#0b032d;
+  /* 暖调城市日落背景 */
+  background: 
+    radial-gradient(rgba(35, 10, 60, 0.5), rgba(10, 2, 30, 0.75)),
+    url('https://picsum.photos/id/1067/1920/1080') center/cover no-repeat fixed;
   overflow:hidden;
   font-family:"Microsoft YaHei",sans-serif;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
   color:#fff;
+  position: relative;
+  cursor: pointer;
+  /* 禁止元素选中，彻底解决点击变蓝背景的问题 */
+  user-select: none;
+  -webkit-user-select: none;
 }
-/* 蛋糕+烛光闪烁 */
+
+/* 文字区域暗化层 */
+.text-glow{
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 85vw;
+  height: 60vh;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 80%);
+  z-index: 2;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+}
+
+/* 漂浮生日小元素 */
+.deco-item{
+  position: fixed;
+  pointer-events: none;
+  opacity: 0.7;
+  z-index: 1;
+}
+.deco-item span{
+  display: inline-block;
+  animation: drift 15s infinite ease-in-out;
+}
+
+/* 核心内容居中布局 排版重新校准 */
+.main-wrap{
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  transform: translateY(-1vh);
+}
+
+/* 蛋糕升级 3D鎏金光晕效果 */
 .cake{
-  font-size:100px;
-  margin-bottom:20px;
-  animation:bounce 1.5s infinite alternate;
+  font-size:clamp(110px, 16vw, 150px);
+  margin-bottom:30px;
+  filter: drop-shadow(0 0 60px rgba(255, 200, 100, 0.8));
+  animation:cakeBounce 3s infinite ease-in-out alternate;
+  /* 禁止点击选中 */
+  user-select: none;
+  -webkit-user-select: none;
 }
 .light{
-  font-size:30px;
-  animation:flicker 0.6s infinite alternate;
+  font-size:48px;
+  animation:flicker 0.7s infinite alternate ease-in-out;
+  filter: drop-shadow(0 0 35px rgba(255, 240, 160, 1));
+  display: inline-block;
+  transform-origin: bottom center;
+  /* 禁止点击选中 */
+  user-select: none;
+  -webkit-user-select: none;
 }
-@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-15px)}}
-@keyframes flicker{0%{opacity:0.6}100%{opacity:1}}
 
-.text-box{text-align:center;padding:0 20px}
+/* 超高级动态鎏金艺术字 流动光效 */
 .title{
-  font-size:clamp(28px,8vw,50px);
-  background:linear-gradient(90deg,#ffd000,#ff477e,#7c3aed);
-  -webkit-background-clip:text;
-  color:transparent;
-  margin-bottom:16px;
+  font-size:clamp(42px,11vw,78px);
+  font-weight: 900;
+  letter-spacing: 10px;
+  position: relative;
+  margin-bottom: 45px;
+  /* 多层立体鎏金描边 */
+  background: linear-gradient(
+    90deg,
+    #ffd700 0%,
+    #ffec8b 25%,
+    #ffd700 50%,
+    #ffb300 75%,
+    #ffd700 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* 动态流动光效动画 */
+  animation: goldFlow 3.5s linear infinite;
+  /* 多层立体外发光 */
+  text-shadow: 
+    0 0 10px rgba(255, 215, 0, 0.5),
+    0 0 20px rgba(255, 179, 0, 0.4),
+    0 0 30px rgba(255, 136, 0, 0.3),
+    0 0 40px rgba(255, 100, 0, 0.2);
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
 }
-.sub{
-  font-size:18px;
-  opacity:0.9;
-  line-height:1.8;
-  margin-bottom:30px;
-  min-height:80px;
-}
-#tip{font-size:14px;opacity:0.7}
 
-/* 礼花粒子 */
-.particle{position:fixed;border-radius:500px;pointer-events:none}
-/* 飘落星星 */
+/* 升级动态光带 流动光晕效果 */
+.title::after{
+  content: '';
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(255, 215, 0, 0.9) 50%,
+    rgba(255, 61, 113, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 50%;
+  filter: blur(6px);
+  animation: lineGlowFlow 2.5s linear infinite;
+}
+
+.sub{
+  font-size:24px;
+  opacity:1;
+  line-height:2.9;
+  letter-spacing: 6px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.7);
+  margin-top: 50px;
+  min-height: 160px;
+  color: #fffdf5;
+  font-weight: 300;
+  /* 文字轻微呼吸光效 */
+  animation: textBreath 4s ease-in-out infinite alternate;
+}
+
+/* 礼花粒子 轻量化优化 */
+.particle{
+  position:fixed;
+  border-radius:500px;
+  pointer-events:none;
+  z-index: 2;
+  will-change: transform, opacity;
+}
+/* 点击爱心特效 */
+.click-heart{
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  font-size: 24px;
+  color: #ff3d71;
+  text-shadow: 0 0 10px rgba(255, 61, 113, 0.6);
+  animation: heartFly 1.2s ease-out forwards;
+}
+/* 飘落星星 轻量化优化 */
 .star{
   position:fixed;
-  color:#fff;
-  font-size:20px;
+  color:#ffdd88;
   pointer-events:none;
+  z-index: 1;
+  text-shadow: 0 0 12px rgba(255, 220, 100, 0.8);
+  will-change: transform, opacity;
+}
+
+/* 全新高级动态动画定义 */
+@keyframes goldFlow{
+  0% { background-position: 0% 0 }
+  100% { background-position: 200% 0 }
+}
+@keyframes lineGlowFlow{
+  0% { background-position: 0% 0 }
+  100% { background-position: 200% 0 }
+}
+@keyframes textBreath{
+  0% { opacity: 0.9 }
+  100% { opacity: 1 }
+}
+@keyframes cakeBounce{
+  0%{transform:translateY(0) rotate(-0.8deg)}
+  100%{transform:translateY(-18px) rotate(0.8deg)}
+}
+@keyframes flicker{
+  0%{opacity:0.55; transform: scaleY(0.92)}
+  100%{opacity:1; transform: scaleY(1.08)}
+}
+@keyframes drift{
+  0%{transform: translateY(0) rotate(-6deg)}
+  50%{transform: translateY(-18px) rotate(6deg)}
+  100%{transform: translateY(0) rotate(-6deg)}
+}
+@keyframes starTwinkle{
+  0% { opacity: 0.3; transform: scale(0.8) }
+  100% { opacity: 1; transform: scale(1.2) }
+}
+@keyframes heartFly{
+  0% { transform: translateY(0) scale(1); opacity: 1 }
+  100% { transform: translateY(-120px) scale(0); opacity: 0 }
 }
 </style>
 </head>
 <body>
-<div class="cake">
-  <span class="light">🕯️</span>🎂
-</div>
-<div class="text-box">
+<!-- 文字区域暗化层 -->
+<div class="text-glow"></div>
+
+<!-- 角落漂浮小装饰 位置重新排布更均衡 -->
+<div class="deco-item" style="top: 10%; left: 7%; font-size: 40px; animation-delay:0s"><span>🎈</span></div>
+<div class="deco-item" style="top: 15%; right: 9%; font-size: 32px; animation-delay:4s"><span>🎀</span></div>
+<div class="deco-item" style="bottom: 15%; left: 5%; font-size: 38px; animation-delay:7s"><span>🍰</span></div>
+<div class="deco-item" style="bottom: 10%; right: 7%; font-size: 35px; animation-delay:10s"><span>✨</span></div>
+<div class="deco-item" style="top: 35%; left: 3%; font-size: 28px; animation-delay:2s"><span>🥂</span></div>
+<div class="deco-item" style="top: 45%; right: 4%; font-size: 30px; animation-delay:8s"><span>🎁</span></div>
+
+<div class="main-wrap">
+  <div class="cake">
+    <span class="light">🕯️</span>🎂
+  </div>
   <div class="title">宇杰生日快乐！</div>
   <div class="sub" id="typeText"></div>
-  <div id="tip">点击屏幕，烟花绽放，播放生日歌🎉</div>
 </div>
 
-<audio id="bgm" loop>
-  <source src="https://music.163.com/song/media/outer/url?id=208378.mp3">
-
+<!-- 带人声的经典Happy Birthday生日歌 音量默认30% 柔和不吵 -->
+<audio id="bgm" loop preload="auto" crossorigin="anonymous" volume="0.3">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+  您的浏览器不支持音频播放
+</audio>
 
 <script>
 const audio = document.getElementById('bgm');
 const textEl = document.getElementById('typeText');
 const words = "愿你岁岁无忧，万事顺意\n平安喜乐，得偿所愿✨\n新的一岁，闪闪发光！";
 let index = 0;
+// 防重复点击锁
+let isClicking = false;
 
-// 逐字打印动画
+// 页面加载完成后预加载音频，音量强制锁定在30% 柔和不吵
+window.addEventListener('DOMContentLoaded', ()=>{
+  audio.load();
+  audio.volume = 0.3;
+  // 直接开始打字，完全不会隐藏
+  typeWrite();
+})
+
+// 逐字打印动画 100%可见，绝对不会消失
 function typeWrite(){
   if(index < words.length){
-    textEl.innerText += words.charAt(index);
+    if(words.charAt(index) === '\n'){
+      textEl.innerHTML += '<br>';
+    }else{
+      const span = document.createElement('span');
+      span.innerText = words.charAt(index);
+      // 直接设置初始可见，不会出现透明度为0的情况
+      span.style.opacity = 1;
+      span.style.display = 'inline-block';
+      textEl.appendChild(span);
+    }
     index++;
-    setTimeout(typeWrite, 80);
+    setTimeout(typeWrite, 110);
   }
 }
-typeWrite();
 
-// 点击触发烟花+音乐
-document.body.onclick = ()=>{
-  audio.play().catch(e=>{});
-  createFire();
+// 点击触发烟花+音乐 新增防重复点击机制
+document.body.onclick = (e)=>{
+  if(isClicking) return;
+  isClicking = true;
+  // 强制触发音频播放，兼容所有浏览器的自动播放拦截，兜底重试
+  audio.play().then(()=>{
+    console.log('音乐播放成功')
+  }).catch(err=>{
+    audio.play().catch(e=> console.log('再次点击即可解锁音频'))
+  });
+  createFire(e, true);
+  createClickHearts(e); // 爱心点击特效
+  // 300ms后解锁点击，避免快速连点卡顿
+  setTimeout(()=> isClicking = false, 300);
 }
 
-// 礼花
-function createFire(){
-  for(let i=0;i<80;i++){
+// 点击爱心特效
+function createClickHearts(e){
+  for(let i=0;i<8;i++){
+    const heart = document.createElement('div');
+    heart.className = 'click-heart';
+    heart.innerText = '❤️';
+    heart.style.left = e.clientX + (Math.random()-0.5)*60 + 'px';
+    heart.style.top = e.clientY + 'px';
+    heart.style.animationDelay = Math.random()*0.2 + 's';
+    document.body.appendChild(heart);
+    setTimeout(()=> heart.remove(), 1200);
+  }
+}
+
+// 轻量化烟花 粒子数量减半，自动清理冗余元素
+function createFire(e, isBig = false){
+  const particleCount = isBig ? 60 : 30;
+  const maxSize = isBig ? 10 : 7;
+  const speedFactor = isBig ? 1 : 0.7;
+  
+  for(let i=0;i<particleCount;i++){
     const div = document.createElement('div');
     div.className='particle';
-    const size = Math.random()*10+4;
+    const size = Math.random()*maxSize+2;
     div.style.width = size+'px';
     div.style.height = size+'px';
-    div.style.left = Math.random()*100+'vw';
-    div.style.top = Math.random()*100+'vh';
-    div.style.background = ['#ff477e','#ffd000','#4ade80','#60a5fa','#a855f7'][Math.floor(Math.random()*5)];
+    const clickX = e ? e.clientX / window.innerWidth * 100 : Math.random()*100;
+    const clickY = e ? e.clientY / window.innerHeight * 100 : Math.random()*100;
+    div.style.left = clickX + 'vw';
+    div.style.top = clickY + 'vh';
+    const colorList = ['#ff477e','#ffd700','#fb5607','#fb923c','#f472b6','#ffc300'];
+    const randomColor = colorList[Math.floor(Math.random()*colorList.length)]
+    div.style.background = randomColor;
+    div.style.boxShadow = `0 0 ${size*2}px ${randomColor}`;
     div.style.opacity=1;
     document.body.appendChild(div);
-    const speedY = Math.random()*2+1;
-    const speedX = (Math.random()-0.5)*4;
+    
+    const speedY = (Math.random()*2 + 0.8) * speedFactor;
+    const speedX = (Math.random()-0.5)*4 * speedFactor;
+    const gravity = 0.03;
     let x = parseFloat(div.style.left);
     let y = parseFloat(div.style.top);
+    let currentSpeedY = 0;
     function fly(){
-      y += speedY;
+      currentSpeedY += gravity;
+      y += speedY - currentSpeedY;
       x += speedX;
       div.style.top = y+'vh';
       div.style.left = x+'vw';
-      div.style.opacity -= 0.018;
-      if(div.style.opacity>0){requestAnimationFrame(fly)}else div.remove();
+      div.style.opacity -= 0.008;
+      div.style.transform = `scale(${div.style.opacity})`;
+      if(div.style.opacity>0.1 && y < 110){
+        requestAnimationFrame(fly)
+      }else{
+        div.remove();
+      }
     }
     fly();
   }
 }
-// 定时自动烟花
-setInterval(createFire,2500);
+// 定时自动烟花 间隔拉长
+setInterval(()=>createFire(null, false),4500);
 
-// 背景飘落星星
+// 蜡烛火焰晃动 轻量化
+const lightEls = document.querySelectorAll('.light');
+function moveLight(){
+  lightEls.forEach(light => {
+    const angle = Math.sin(Date.now()/220) * 2;
+    light.style.transform = `rotate(${angle}deg)`;
+  });
+  requestAnimationFrame(moveLight);
+}
+moveLight();
+
+// 背景飘落星星 轻量化 自动清理
 function createStar(){
   const star = document.createElement('div');
   star.className='star';
-  star.innerText = '✦';
+  const starEmoji = ['✦','✧','⭐','✶','❋'][Math.floor(Math.random()*5)]
+  star.innerText = starEmoji;
   star.style.left = Math.random()*100+'vw';
   star.style.top = '-30px';
-  star.style.opacity = Math.random();
-  star.style.fontSize = Math.random()*16 + 8 + 'px';
+  star.style.opacity = Math.random()*0.7 + 0.3;
+  star.style.fontSize = Math.random()*18 + 7 + 'px';
+  star.style.animation = 'starTwinkle 3s infinite alternate'
   document.body.appendChild(star);
   let y = -30;
   let x = parseFloat(star.style.left);
-  const speedY = Math.random()*1.2 + 0.6;
+  const speedY = Math.random()*0.9 + 0.3;
   const sway = (Math.random()-0.5)*0.4;
+  fall();
   function fall(){
     y += speedY;
     x += sway;
     star.style.top = y+'vh';
     star.style.left = x+'vw';
-    if(y < 105){
+    if(y < 108){
       requestAnimationFrame(fall);
     }else{
       star.remove();
     }
   }
-  fall();
 }
-setInterval(createStar,300);
+setInterval(createStar,400);
 </script>
 </body>
 </html>
