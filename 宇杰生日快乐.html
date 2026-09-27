@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生日快乐🎂</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  background:#0b032d;
+  overflow:hidden;
+  font-family:"Microsoft YaHei",sans-serif;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+}
+/* 蛋糕+烛光闪烁 */
+.cake{
+  font-size:100px;
+  margin-bottom:20px;
+  animation:bounce 1.5s infinite alternate;
+}
+.light{
+  font-size:30px;
+  animation:flicker 0.6s infinite alternate;
+}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-15px)}}
+@keyframes flicker{0%{opacity:0.6}100%{opacity:1}}
+
+.text-box{text-align:center;padding:0 20px}
+.title{
+  font-size:clamp(28px,8vw,50px);
+  background:linear-gradient(90deg,#ffd000,#ff477e,#7c3aed);
+  -webkit-background-clip:text;
+  color:transparent;
+  margin-bottom:16px;
+}
+.sub{
+  font-size:18px;
+  opacity:0.9;
+  line-height:1.8;
+  margin-bottom:30px;
+  min-height:80px;
+}
+#tip{font-size:14px;opacity:0.7}
+
+/* 礼花粒子 */
+.particle{position:fixed;border-radius:500px;pointer-events:none}
+/* 飘落星星 */
+.star{
+  position:fixed;
+  color:#fff;
+  font-size:20px;
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+<div class="cake">
+  <span class="light">🕯️</span>🎂
+</div>
+<div class="text-box">
+  <div class="title">宇杰生日快乐！</div>
+  <div class="sub" id="typeText"></div>
+  <div id="tip">点击屏幕，烟花绽放，播放生日歌🎉</div>
+</div>
+
+<audio id="bgm" loop>
+  <source src="https://music.163.com/song/media/outer/url?id=208378.mp3">
+
+
+<script>
+const audio = document.getElementById('bgm');
+const textEl = document.getElementById('typeText');
+const words = "愿你岁岁无忧，万事顺意\n平安喜乐，得偿所愿✨\n新的一岁，闪闪发光！";
+let index = 0;
+
+// 逐字打印动画
+function typeWrite(){
+  if(index < words.length){
+    textEl.innerText += words.charAt(index);
+    index++;
+    setTimeout(typeWrite, 80);
+  }
+}
+typeWrite();
+
+// 点击触发烟花+音乐
+document.body.onclick = ()=>{
+  audio.play().catch(e=>{});
+  createFire();
+}
+
+// 礼花
+function createFire(){
+  for(let i=0;i<80;i++){
+    const div = document.createElement('div');
+    div.className='particle';
+    const size = Math.random()*10+4;
+    div.style.width = size+'px';
+    div.style.height = size+'px';
+    div.style.left = Math.random()*100+'vw';
+    div.style.top = Math.random()*100+'vh';
+    div.style.background = ['#ff477e','#ffd000','#4ade80','#60a5fa','#a855f7'][Math.floor(Math.random()*5)];
+    div.style.opacity=1;
+    document.body.appendChild(div);
+    const speedY = Math.random()*2+1;
+    const speedX = (Math.random()-0.5)*4;
+    let x = parseFloat(div.style.left);
+    let y = parseFloat(div.style.top);
+    function fly(){
+      y += speedY;
+      x += speedX;
+      div.style.top = y+'vh';
+      div.style.left = x+'vw';
+      div.style.opacity -= 0.018;
+      if(div.style.opacity>0){requestAnimationFrame(fly)}else div.remove();
+    }
+    fly();
+  }
+}
+// 定时自动烟花
+setInterval(createFire,2500);
+
+// 背景飘落星星
+function createStar(){
+  const star = document.createElement('div');
+  star.className='star';
+  star.innerText = '✦';
+  star.style.left = Math.random()*100+'vw';
+  star.style.top = '-30px';
+  star.style.opacity = Math.random();
+  star.style.fontSize = Math.random()*16 + 8 + 'px';
+  document.body.appendChild(star);
+  let y = -30;
+  let x = parseFloat(star.style.left);
+  const speedY = Math.random()*1.2 + 0.6;
+  const sway = (Math.random()-0.5)*0.4;
+  function fall(){
+    y += speedY;
+    x += sway;
+    star.style.top = y+'vh';
+    star.style.left = x+'vw';
+    if(y < 105){
+      requestAnimationFrame(fall);
+    }else{
+      star.remove();
+    }
+  }
+  fall();
+}
+setInterval(createStar,300);
+</script>
+</body>
+</html>
